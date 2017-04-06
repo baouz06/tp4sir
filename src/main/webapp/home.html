@@ -5,14 +5,18 @@
 <title>Insert title here</title>
 </head>
 <body>
-<FORM Method="POST" Action="/HomeInfo" Name="Form1">
-		piece: <INPUT type=text size=20 name=piece><BR> Average
+ <div>
+    <FORM Method="POST" Action="/HomeInfo" Name="Form1">
+		nombre de  pieces: <INPUT type=text size=20 name=piece><BR> 
 		taille: <INPUT type=float size=20 name=taille><BR>
-		personne : <INPUT type=text size=2 name=person><BR> <INPUT
-			type=submit value=Send>
+		personne : <INPUT type=text size=2 name=person><BR> 
+		<INPUT type=submit value=Send>
 	</FORM>
+ </div>
+ <div>
 	<form Method="GET" Action="/HomeInfo">
 	<INPUT type=submit value=afficher>
 	</form>
+  </div>	
 </body>
 </html>

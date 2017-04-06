@@ -24,7 +24,7 @@ public class JpaTest {
 	 */
 	public static void main(String[] args) {
 		EntityManagerFactory factory = Persistence
-				.createEntityManagerFactory("mysql");
+				.createEntityManagerFactory("example");
 		EntityManager manager = factory.createEntityManager();
 		JpaTest test = new JpaTest(manager);
 
@@ -32,25 +32,25 @@ public class JpaTest {
 		tx.begin();
 		
 		Person personne = new Person();
-		  personne.setNom("baouz");
-          personne.setPrenom("khaled");
+		  personne.setName("baouz");
+          personne.setFirstName("khaled");
     
-          personne.setUnmail("email1");
+          personne.setMail("email1");
 		
           
           Person personne2 = new Person();
-          personne2.setNom("talay");
-          personne2.setPrenom("emri");
+          personne2.setName("talay");
+          personne2.setFirstName("emre");
     
-          personne2.setUnmail("email2");
+          personne2.setMail("email2");
           
           
           
           Person personne3 = new Person();
-          personne3.setNom("julien");
-          personne3.setPrenom("sezar");
+          personne3.setName("julien");
+          personne3.setFirstName("sezar");
     
-          personne3.setUnmail("email3");
+          personne3.setMail("email3");
           // CREATION DE MAISON
           Home home = new Home();
           home.setNombre_de_piece(2);
@@ -83,11 +83,7 @@ public class JpaTest {
           ELECTRONICdEVICE3.setPersonnes(personne3);
           
           Heater heater = new Heater();
-          
-          
-          
-          
-          
+                    
           manager.persist(ELECTRONICdEVICE);
           manager.persist(ELECTRONICdEVICE2);
           manager.persist(ELECTRONICdEVICE3);

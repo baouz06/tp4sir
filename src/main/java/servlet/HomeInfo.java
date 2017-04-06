@@ -26,6 +26,7 @@ import java.util.Collection;
 @WebServlet(name="homeinfo",urlPatterns = {"/HomeInfo"})
 public class HomeInfo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private ManagerSingleton ManagerSingleton;
 
 	/**
 	 * Default constructor.
@@ -38,20 +39,21 @@ public class HomeInfo extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		String query = "select p from Person as p";
-		
-		EntityManagerFactory manager = Persistence.createEntityManagerFactory("hello");
-				
-		Collection<Person> result = manager.createEntityManager().createQuery(query).getResultList();
-	
+
+		this.ManagerSingleton = ManagerSingleton.getInstance();
+		EntityManager manager = this.ManagerSingleton.getManager();
+		EntityTransaction tx = manager.getTransaction();
+		tx.begin();
+
+		Collection<Home> result = manager.createQuery("Select h From Home h", Home.class).getResultList();
+
 		out.println("<HTML>\n<BODY>\n" + "<H1>Recapitulatif des informations sur les maisons</H1>\n" + "<UL>\n");
-		for (Object p : result) {
-			out.println("<LI> enregistrement : " + p + "\n");
-			out.println("coucou");
+		for (Home h : result) {
+			out.println("<LI> maison : " + h+ "\n");
+			
 		}
 		out.println("</UL>\n" + "</BODY></HTML>");
 	}
@@ -62,15 +64,11 @@ public class HomeInfo extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/html");
-
-	
-
 		out.println("<HTML>\n<BODY>\n" +
 				"<H1>Recapitulatif des informations</H1>\n" +
 				"<UL>\n" +			
@@ -84,33 +82,16 @@ public class HomeInfo extends HttpServlet {
 
 		
 		
-		EntityManagerFactory factory = Persistence
-				.createEntityManagerFactory("example");
-		EntityManager manager = factory.createEntityManager();
-		
-		
-
+		this.ManagerSingleton = ManagerSingleton.getInstance();
+		EntityManager manager = this.ManagerSingleton.getManager();
 		EntityTransaction tx = manager.getTransaction();
 		tx.begin();
-		
-		
-		try {
-			//creation of person
-			Person personne = new Person();
-			  personne.setNom(request.getParameter("piece"));
-	          personne.setPrenom(request.getParameter("piece"));
-	          personne.setUnmail(request.getParameter("piece"));
-	          //creation of Home
-	          Home home = new Home();
-	          home.setNombre_de_piece(2);
-	          home.setTaille(50);
-	          home.setPerson_homme(personne);
-	          manager.persist(personne);
-	          manager.persist(home);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+		Home home = new Home();
+		home.setNombre_de_piece(Long.valueOf(request.getParameter("piece")));
+		home.setTaille(Long.valueOf(request.getParameter("taille")));
+		manager.persist(home);
+
 		tx.commit();
 		out.println("Enregistrement effectué");
 	}

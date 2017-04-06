@@ -5,12 +5,20 @@
 <title>MyForm</title>
 </head>
 <body>
-<FORM Method="POST" Action="/UserInfo">
-Name : 		<INPUT type=text size=20 name=name><BR>
-Firstname : 	<INPUT type=text size=20 name=firstname><BR>
-Age : 		<INPUT type=text size=2 name=age><BR>
+
+ <div>
+	<FORM Method="POST" Action="/UserInfo">
+		Name : <INPUT type=text size=20 name=name><BR> 
+		Firstname: <INPUT type=text size=20 name=firstname><BR> 
+		mail : <INPUT type=text size=2 name=mail><BR> 
 		<INPUT type=submit value=Send>
-</FORM>
+	</FORM>
+ </div>
+ <div>
+	<FORM Method="GET" Action="/UserInfo">
+		<INPUT type=submit value=visualiser>
+	</FORM>
+ </div>
 </body>
 
 </html>
