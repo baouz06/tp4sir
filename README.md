@@ -14,7 +14,7 @@ réseau social permettant de comparer sa consommation électrique avec ses amis,
 
 ## Etape 1 Chargement des dépendances
 
-Tout d’abord, nous avons modifié notre fichier pom.xml pour ajouter la dépendance à l'API des servlets
+Tout d’abord, nous avons modifié notre fichier pom.xml pour ajouter les dépendances nécessaires
 
 ```
 <dependency>
@@ -24,20 +24,9 @@ Tout d’abord, nous avons modifié notre fichier pom.xml pour ajouter la dépen
 	<scope>provided</scope>
 </dependency>
 ```
+## Insertion et visualisation dés données en utilisant les  Servlets
 
-Une fois que nous avons fini d'implementation des dépendances ,on a lancé la commande "mvn tomcat7:run " dans la console.
-
-
-## Etape 2 Insertion de ressources statiques
-
-Nous avons crée 2 fichiers d'html pour récupérer les informations qui sera saisie par les utilisateurs.Dans ces deux fichiers d'html on a mis une formulaire avec des differents champs.
-
-
-Puisque nous avons deux actions possibles dans chaque fichier d'Html
-1. Afficher les données
-2. Mettre les données dans la base 
-on a utilisé les methodes de POST et GET. 
-
+Nous avons crée 2 formulaires:
 
 ### myfrom.html 
 
@@ -56,6 +45,7 @@ on a utilisé les methodes de POST et GET.
 	</FORM>
 </div>
 ```
+Comme nous le voyant, on peut soit visualiser toutes  les informations concernant les  personnes enregistrées (GET) ou bien ajouter des personnes à la base de données (POST).
 
 ### home.html
 ```
@@ -73,18 +63,14 @@ on a utilisé les methodes de POST et GET.
  </form>
 </div>	
 ```
+Même principe pour ce qui concerne les maisons.
 
-## Etape 3 Création des Servlets
+## Création des Servlets
+Précédemment, nous avons mis  «/UserInfo » et « /HomeInfo » comme action des formulaires. Ces deux url référencie  l’url de notre  servlet soit en GET ou bien en POST, les servlets jouent un rôle de contrôleurs dans notre application 
 
-Pour créer une page web qui retourne des informations issus
-de la base de données et un formulaire qui permet d’ajouter des éléments dans la
-base de données nous avons besion forcement des servlets qui sera intermediare pour la comunication entre la base de données et la page web.
-
-Donc nous avons crée deux fichiers de servlets pour deux pages web differentes.
+Donc nous avons crée une servlet pour chaque formulaire comme ceci:
 
 ### HomeInfo.java - UserInfo.java
-
-Une fois que nous avons defini EntityManager pour utiliser les foncionalités comme "Insert","Select","Delete" pour la base de données 
 
 Dans la partie doGet,
 
@@ -100,8 +86,7 @@ Collection<Home> result = manager.createQuery("Select h From Home h", Home.class
 
 Dans la partie doPost,
 
-On met les informations ou un utilisateur a saisie par formulaire de notre page web c'est pour ça que  nous avons utilisé les fonctions de setter de fichier Home.java
-
+Ici on crée une maison à partir de données envoyées dans le formulaire home.html
 ```
 		this.ManagerSingleton = ManagerSingleton.getInstance();
 		EntityManager manager = this.ManagerSingleton.getManager();
@@ -116,7 +101,7 @@ On met les informations ou un utilisateur a saisie par formulaire de notre page 
 
 ```
 
-Pour le fichier de UserInfo aussi nous avons fait les meme etapes.
+Pareil pour la servlet UserInfo.
 
 ### ManagerSingleton.java
 
@@ -139,12 +124,21 @@ private ManagerSingleton() {
 
 Pour la partie Rest nous avons créé deux fichiers, HomeService.java et PersonService.java
 
-HomeService.java nous permet de voir les informations des maison qui se trouve sur la base de données en format de json en localhost
+HomeService.java nous permet de récupérer une maison spécifique,toutes les maisons, modifier, supprimer et ajouter une maisons dans la base de données en format json.
 
-UserInfo.java nous permet de voir les informations des utilisateurs qui se trouve sur la base de données en format de json en localhost
+UserInfo.java nous permet de récupérer une personne spécifique,toutes les personnes,ajouter un utilisateur dans la base de données en format en json, pour la suppression d'une personne ça ne fonctionne pas à cause des clés étrangères d’autres classes. 
 
-Nous avons utilisé les methodes POST,GET et DELETE et aussi en utilisant managerSingleton on a evité des connections unsuffisant à la base de données apres chaque action.
+Nous avons utilisé les methodes POST,GET et DELETE:
 ```
+@Path("/home")
+public class PersonService {
+	private ManagerSingleton ManagerSingleton;
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+` public List<Person> getAllPersons() {
+		``
+	}	
+	
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -178,7 +172,14 @@ Nous avons utilisé les methodes POST,GET et DELETE et aussi en utilisant manage
 		tx.commit();
 	}
 ```
-Nous avons fait les meme etapes pour UserInfo.java .
+Par défaut quand on met  localhost :8080/rest/home la méthode getAllHomes()est appelé qui est une méthode get ($GET) permettant de récupérer tous les maisons sous format Json « @produces(MediaType.APPLICATION8JSON)».
+Quand on rajoute un id après home comme : localhost :8080/rest/home/1 la méthode getHomeById est appelé pour récupérer une maison ayant un id égal 1.
+L’annotation @Pathparam("id") précise bien que l’id passé en url sera bien le paramètre de la fonction et aussi ici on récupère du json grâce à  @produces(MediaType.APPLICATION8JSON).
+La troisième  est de type delete @DELETE pour supprimer une maison ayant un id précis
+La dernière est de type POST @POST pour ajouter une maison, dans ce cas on doit fournir à la méthode addHome  une maison sous format JSON  « @consumes(MediaType.APPLICATION8JSON)».
+
+
+Pareil pour UserInfo.java .
 
 
 
